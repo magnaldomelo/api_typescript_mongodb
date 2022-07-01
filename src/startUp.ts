@@ -1,11 +1,15 @@
-import express, { Application, Request, Response } from	"express";
-import database	from "./infra/db";
-import NewsController from "./controller/newsController";
+import express, { Application } from "express";
+import Database from "./infra/db";
+
+import './shared/container';
+import newsRouter from "./router/newsRouter";
+import videosRouter from "./router/videosRouter";
+import galeriaRouter from "./router/galeriaRouter";
 
 class StartUp {
 
     public app:	Application;
-    private	_db: database =	new	database();
+    private	_db: Database =	new	Database();
 
     constructor() {
         this.app = express();
@@ -15,16 +19,12 @@ class StartUp {
 
     routes() {
         this.app.route("/").get((req, res) => {
-            res.send({ versao: "0.0.1" });
-        });
-        
-        this.app.route("/api/v1/news/:page/:qtd").get((req:	Request, res: Response) => {
-            return NewsController.get(req, res);
+            res.send({ versao: "0.0.2" });
         });
 
-        this.app.route("/api/v1/news/:id").get((req: Request, res: Response) =>	{
-            return	NewsController.getById(req,	res);
-        });
+        this.app.use("/", newsRouter);
+        this.app.use("/", videosRouter);
+        this.app.use("/", galeriaRouter);
     }
 }
 
