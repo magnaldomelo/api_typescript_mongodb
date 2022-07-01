@@ -1,13 +1,11 @@
-import { NewsService } from "../services/NewsService";
 import { Request, Response } from "express";
+import { injectable, inject } from "tsyringe";
+import { INewsService } from "../contracts/iNewsService";
 
-class NewsController {
-    
-    private	_service:	NewsService;
+@injectable()
+export class NewsController {
 				
-    constructor()	{
-	    this._service = new	NewsService();
-	}
+    constructor(@inject('INewsService') private _service: INewsService) { }
 				
     async get(request: Request, response: Response)	{
 								
@@ -18,19 +16,17 @@ class NewsController {
 			response.status(200).json({	result	});
 		} catch (error)	{
 		    response.status(500).json({ error: error.message || error.toString() });
-								}
 		}
+	}
 				
-        async getById(request: Request, response: Response) {
+    async getById(request: Request, response: Response) {
 								
-            try	{
-				const _id = request.params.id;
-				let	result = await this._service.get(_id);
-				response.status(200).json({ result });
-			} catch	(error) {
-				response.status(500).json({ error: error.message || error.toString() });
-			}
-	    }
+    	try	{
+			const _id = request.params.id;
+			let	result = await this._service.get(_id);
+			response.status(200).json({ result });
+		} catch	(error) {
+			response.status(500).json({ error: error.message || error.toString() });
+		}
+	}
 }
-
-export default new NewsController();
